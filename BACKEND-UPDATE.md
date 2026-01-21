@@ -866,11 +866,35 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/product.controller');
 
-router.get('/', controller.getProducts);
-router.get('/:id', controller.getProductById);
-router.post('/', controller.createProduct);
-router.put('/:id', controller.updateProduct);
-router.delete('/:id', controller.deleteProduct);
+router.get('/',
+  // #swagger.tags = ['Products']
+  // #swagger.description = 'ดึงสินค้าทั้งหมด (สามารถใช้ search, category, minPrice, maxPrice, inStock เพื่อค้นหา)'
+  controller.getProducts
+);
+
+router.get('/:id',
+  // #swagger.tags = ['Products']
+  // #swagger.description = 'ดึงสินค้าตาม ID'
+  controller.getProductById
+);
+
+router.post('/',
+  // #swagger.tags = ['Products']
+  // #swagger.description = 'สร้างสินค้าใหม่'
+  controller.createProduct
+);
+
+router.put('/:id',
+  // #swagger.tags = ['Products']
+  // #swagger.description = 'แก้ไขข้อมูลสินค้า'
+  controller.updateProduct
+);
+
+router.delete('/:id',
+  // #swagger.tags = ['Products']
+  // #swagger.description = 'ลบสินค้า'
+  controller.deleteProduct
+);
 
 module.exports = router;
 ```
@@ -884,11 +908,77 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/order.controller');
 
-router.get('/', controller.getOrders);
-router.get('/:id', controller.getOrderById);
-router.post('/', controller.createOrder);
-router.put('/:id', controller.updateOrder);
-router.delete('/:id', controller.deleteOrder);
+router.get('/',
+  // #swagger.tags = ['Orders']
+  // #swagger.description = 'ดึงคำสั่งซื้อทั้งหมด (สามารถใช้ status, customerName, startDate, endDate, minAmount, maxAmount เพื่อค้นหา)'
+  controller.getOrders
+);
+
+router.get('/:id',
+  // #swagger.tags = ['Orders']
+  // #swagger.description = 'ดึงคำสั่งซื้อตาม ID'
+  controller.getOrderById
+);
+
+router.post('/',
+  // #swagger.tags = ['Orders']
+  // #swagger.description = 'สร้างคำสั่งซื้อใหม่'
+  controller.createOrder
+);
+
+router.put('/:id',
+  // #swagger.tags = ['Orders']
+  // #swagger.description = 'แก้ไขคำสั่งซื้อ'
+  controller.updateOrder
+);
+
+router.delete('/:id',
+  // #swagger.tags = ['Orders']
+  // #swagger.description = 'ลบคำสั่งซื้อ'
+  controller.deleteOrder
+);
+
+module.exports = router;
+```
+
+---
+
+### 4.3 สร้างไฟล์ `src/routes/member.routes.js`
+
+```javascript
+const express = require('express');
+const router = express.Router();
+const controller = require('../controllers/member.controller');
+
+router.get('/',
+  // #swagger.tags = ['Members']
+  // #swagger.description = 'ดึงสมาชิกทั้งหมด (สามารถใช้ search, email, phone เพื่อค้นหา)'
+  controller.getMembers
+);
+
+router.get('/:id',
+  // #swagger.tags = ['Members']
+  // #swagger.description = 'ดึงสมาชิกตาม ID'
+  controller.getMemberById
+);
+
+router.post('/',
+  // #swagger.tags = ['Members']
+  // #swagger.description = 'สร้างสมาชิกใหม่'
+  controller.createMember
+);
+
+router.put('/:id',
+  // #swagger.tags = ['Members']
+  // #swagger.description = 'แก้ไขข้อมูลสมาชิก'
+  controller.updateMember
+);
+
+router.delete('/:id',
+  // #swagger.tags = ['Members']
+  // #swagger.description = 'ลบสมาชิก'
+  controller.deleteMember
+);
 
 module.exports = router;
 ```
@@ -916,15 +1006,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // CORS (สำหรับ React Frontend)
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));

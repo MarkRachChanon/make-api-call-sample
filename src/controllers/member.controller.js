@@ -1,10 +1,34 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// GET /members
+// GET /members - ดึงสมาชิกทั้งหมด (พร้อม Filter)
 exports.getMembers = async (req, res) => {
   try {
+    const { search, email, phone } = req.query;
+
+    // สร้าง where condition
+    const where = {};
+
+    // Filter: ค้นหาจาก firstName หรือ lastName
+    if (search) {
+      where.OR = [
+        { firstName: { contains: search } },
+        { lastName: { contains: search } }
+      ];
+    }
+
+    // Filter: ค้นหาจาก email (exact match)
+    if (email) {
+      where.email = { contains: email };
+    }
+
+    // Filter: ค้นหาจาก phone (partial match)
+    if (phone) {
+      where.phone = { contains: phone };
+    }
+
     const members = await prisma.member.findMany({
+      where,
       orderBy: {
         createdAt: 'desc'
       }
@@ -13,6 +37,8 @@ exports.getMembers = async (req, res) => {
     res.json({
       status: 'success',
       message: 'ดึงข้อมูลสมาชิกสำเร็จ',
+      total: members.length,
+      filters: { search, email, phone },
       data: members
     });
   } catch (error) {
@@ -25,7 +51,7 @@ exports.getMembers = async (req, res) => {
   }
 };
 
-// GET /members/:id
+// GET /members/:id - ดึงสมาชิกตาม ID
 exports.getMemberById = async (req, res) => {
   const memberId = parseInt(req.params.id, 10);
 
@@ -63,7 +89,7 @@ exports.getMemberById = async (req, res) => {
   }
 };
 
-// POST /members
+// POST /members - สร้างสมาชิกใหม่
 exports.createMember = async (req, res) => {
   const { firstName, lastName, email, phone, address } = req.body;
 
@@ -115,7 +141,7 @@ exports.createMember = async (req, res) => {
   }
 };
 
-// PUT /members/:id
+// PUT /members/:id - แก้ไขสมาชิก
 exports.updateMember = async (req, res) => {
   const memberId = parseInt(req.params.id, 10);
   const { firstName, lastName, email, phone, address } = req.body;
@@ -183,7 +209,7 @@ exports.updateMember = async (req, res) => {
   }
 };
 
-// DELETE /members/:id
+// DELETE /members/:id - ลบสมาชิก
 exports.deleteMember = async (req, res) => {
   const memberId = parseInt(req.params.id, 10);
 
