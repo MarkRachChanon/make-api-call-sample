@@ -989,10 +989,10 @@ module.exports = router;
 
 เพิ่ม Routes ใหม่และ CORS:
 
-ติดตั้ง CORS
+ติดตั้ง CORS Package
 
 ```bash
-npx prisma migrate dev --name add_products_orders
+npm install cors
 ```
 
 เพิ่ม Routes
