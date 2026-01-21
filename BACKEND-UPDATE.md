@@ -989,9 +989,18 @@ module.exports = router;
 
 เพิ่ม Routes ใหม่และ CORS:
 
+ติดตั้ง CORS
+
+```bash
+npx prisma migrate dev --name add_products_orders
+```
+
+เพิ่ม Routes
+
 ```javascript
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('../swagger-output.json');
 const memberRoutes = require('./routes/member.routes');

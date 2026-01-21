@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('../swagger-output.json');
 const memberRoutes = require('./routes/member.routes');
@@ -12,6 +13,13 @@ const PORT = process.env.PORT || 4000;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// CORS configuration
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
