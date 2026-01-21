@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Model เดิม
 model Member {
   id        Int      @id @default(autoincrement())
   firstName String   @map("first_name")
@@ -18,4 +19,36 @@ model Member {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("members")
+}
+
+// Model ใหม่ที่ 1: Products
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?  @db.Text
+  price       Float
+  stock       Int      @default(0)
+  category    String?
+  imageUrl    String?  @map("image_url")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("products")
+}
+
+// Model ใหม่ที่ 2: Orders
+model Order {
+  id          Int      @id @default(autoincrement())
+  orderNumber String   @unique @map("order_number")
+  customerName String  @map("customer_name")
+  email       String
+  phone       String?
+  totalAmount Float    @map("total_amount")
+  status      String   @default("pending")
+  orderDate   DateTime @default(now()) @map("order_date")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("orders")
 }
